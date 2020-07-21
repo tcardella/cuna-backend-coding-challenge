@@ -1,4 +1,4 @@
-name: CUNA Backend Coding Challenge Push Pipeline
+name: push-to-develop
 
 on:
   push:
