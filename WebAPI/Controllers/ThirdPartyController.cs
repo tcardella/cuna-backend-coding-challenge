@@ -19,7 +19,7 @@ namespace WebAPI.Controllers
         [HttpPost]
         [Route("callback")]
         [ProducesResponseType(204)]
-        public async Task<NoContentResult> Callback(string body)
+        public async Task<NoContentResult> PostCallback(string body)
         {
             return NoContent();
         }
