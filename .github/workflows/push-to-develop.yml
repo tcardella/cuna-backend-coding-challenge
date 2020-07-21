@@ -1,0 +1,30 @@
+name: CUNA Backend Coding Challenge Push Pipeline
+
+on:
+  push:
+    branches: [ develop ]
+  pull_request:
+    branches: [ develop ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.101
+
+    - name: Install dependencies
+      run: dotnet restore
+
+    - name: Build
+      run: |
+        dotnet build -c Release --no-restore ./cuna-backend-coding-challenge/WebAPI/WebAPI.csproj
+        dotnet build --no-restore ./cuna-backend-coding-challenge/WebAPI.UnitTests/WebAPI.UnitTests.csproj
+    
+    - name: Test
+      run: dotnet test --no-restore --verbosity normal ./cuna-backend-coding-challenge/WebAPI.UnitTests/WebAPI.UnitTests.csproj
