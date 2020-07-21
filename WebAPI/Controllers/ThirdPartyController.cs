@@ -27,7 +27,7 @@ namespace WebAPI.Controllers
         [HttpPut]
         [Route("callback")]
         [ProducesResponseType(204)]
-        public async Task<NoContentResult> Callback([FromBody] PutBody body)
+        public async Task<NoContentResult> PutCallback([FromBody] PutBody body)
         {
             return NoContent();
         }
