@@ -66,11 +66,27 @@ namespace WebAPI.Controllers
         [HttpPost]
         [Route("callback")]
         [ProducesResponseType(204)]
-        public async Task<NoContentResult> PostCallback(string body)
+        public async Task<ActionResult> PostCallback(string body)
         {
-            // TODO: add status to the database
+            var requestId = ""; // TODO: Where does this come from? Is it in a header from the Third Party Service? Should this REST API be stateful? Is this what body should be?
 
-            return NoContent();
+            var request = await _context.Requests.SingleOrDefaultAsync(r => r.Id == requestId);
+
+            if (request == null)
+                return NotFound($"A request with the id '{requestId}' could not be found.");
+
+            request.Body = body;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPut]
