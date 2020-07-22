@@ -1,25 +1,31 @@
 ﻿using System.Threading.Tasks;
-using WebAPI.Controllers;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using WebAPI.Models;
 using Xunit;
 
 namespace WebAPI.UnitTests
 {
-    public class PutCallbackTests
+    public class PutCallbackTests : BaseTests
     {
-        public PutCallbackTests()
-        {
-            _sut = new ThirdPartyController();
-        }
-
-        private readonly ThirdPartyController _sut;
-
         [Fact]
-        public async Task given_a_valid_string_should_return_204_status_code()
+        public async Task given_a_valid_PutBody_should_return_NoContentResult()
         {
             var response = await _sut.PutCallback(new PutBody("My Status", "My Detail"));
 
-            Assert.Equal(204, response.StatusCode);
+            Assert.IsType<NoContentResult>(response);
+        }
+
+        [Fact]
+        public async Task given_a_valid_PutBody_should_store_changes_in_db()
+        {
+            var id = ""; // TODO: What should id be?
+
+            var response = await _sut.PutCallback(new PutBody("My Status", "My Detail"));
+
+            var request = await _context.Requests.SingleOrDefaultAsync(r => r.Id == id);
+
+            Assert.NotNull(request);
         }
     }
 }

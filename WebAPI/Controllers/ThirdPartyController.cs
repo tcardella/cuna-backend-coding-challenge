@@ -92,9 +92,27 @@ namespace WebAPI.Controllers
         [HttpPut]
         [Route("callback")]
         [ProducesResponseType(204)]
-        public async Task<NoContentResult> PutCallback([FromBody] PutBody body)
+        public async Task<ActionResult> PutCallback([FromBody] PutBody body)
         {
-            // TODO: load request log and append status update
+            var id = ""; // TODO: Where does this come from?
+
+            var request = await _context.Requests.SingleOrDefaultAsync(r => r.Id == id);
+
+            if (request == null)
+                return NotFound($"A request with an id of '{id}' could not be found.");
+
+            request.Status = body.Status;
+            request.Detail = body.Detail;
+            request.Body = body.Detail;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
 
             return NoContent();
         }
