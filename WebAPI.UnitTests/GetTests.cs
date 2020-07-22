@@ -1,28 +1,20 @@
-﻿using System;
-using System.Threading.Tasks;
-using WebAPI.Controllers;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using WebAPI.Models;
 using Xunit;
 
 namespace WebAPI.UnitTests
 {
-    public class GetCallbackTests
+    public class GetCallbackTests : BaseTests
     {
-        public GetCallbackTests()
-        {
-            _sut = new ThirdPartyController();
-        }
-
-        private readonly ThirdPartyController _sut;
-
         [Fact]
         public async Task given_a_valid_string_should_return_204_status_code()
         {
-            var response = await _sut.Get(Guid.NewGuid());
+            var response = await _sut.Get(""); // TODO: Figure out what id should be here
 
-            Assert.Equal(200, response.StatusCode);
+            Assert.IsType<OkObjectResult>(response);
 
-            var data = (GetBody) response.Value;
+            var data = (GetBody) ((OkObjectResult)response).Value;
             Assert.NotNull(data.Status);
             Assert.NotNull(data.Detail);
             Assert.NotNull(data.Body);

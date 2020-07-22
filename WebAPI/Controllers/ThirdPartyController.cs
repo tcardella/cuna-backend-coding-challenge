@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using WebAPI.Models;
 
@@ -119,11 +120,14 @@ namespace WebAPI.Controllers
 
         [HttpGet]
         [Route("status/{id}")]
-        public async Task<OkObjectResult> Get(Guid id)
+        public async Task<ActionResult> Get(string id)
         {
-            // TODO: load request log and return it.
+            var request = await _context.Requests.SingleOrDefaultAsync(r => r.Id == id);
 
-            return new OkObjectResult(new GetBody("status", "detail", "body"));
+            if (request == null)
+                return NotFound($"A request with an id of '{id}' could not be found.");
+
+            return new OkObjectResult(new GetBody(request.Status, request.Detail, request.Body));
         }
     }
 }
