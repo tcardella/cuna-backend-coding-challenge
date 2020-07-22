@@ -50,6 +50,8 @@ namespace WebAPI.Controllers
         [ProducesResponseType(204)]
         public async Task<NoContentResult> PostCallback(string body)
         {
+            // TODO: add status to the database
+
             return NoContent();
         }
 
@@ -58,6 +60,8 @@ namespace WebAPI.Controllers
         [ProducesResponseType(204)]
         public async Task<NoContentResult> PutCallback([FromBody] PutBody body)
         {
+            // TODO: load request log and append status update
+
             return NoContent();
         }
 
@@ -65,6 +69,8 @@ namespace WebAPI.Controllers
         [Route("status/{id}")]
         public async Task<OkObjectResult> Get(Guid id)
         {
+            // TODO: load request log and return it.
+
             return new OkObjectResult(new GetBody("status", "detail", "body"));
         }
     }
