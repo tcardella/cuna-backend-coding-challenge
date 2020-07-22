@@ -12,6 +12,13 @@ namespace WebAPI.Controllers
     [ApiController]
     public class ThirdPartyController : ControllerBase
     {
+        private readonly RequestContext _context;
+
+        public ThirdPartyController(RequestContext context)
+        {
+            _context = context;
+        }
+
         [HttpPost]
         [Route("request")]
         public async Task<ActionResult> Post([FromBody] PostBody body)
@@ -19,7 +26,8 @@ namespace WebAPI.Controllers
             if (body?.Body == null)
                 return BadRequest("No object named 'body' could be found.");
 
-            var url = @"https://urldefense.proofpoint.com/v2/url?u=http-3A__example.com_request&d=DwIGAg&c=iWzD8gpC8N4xSkOHZBDmCw&r=R0U6eziUSfkIiSy6xlVVHEbyT-5CVX85B2177L6G3Po&m=yeOGbdLEit9cyYWgLXxv5PRcMgRiallgPowRbt59hFw&s=lZ8qcf2Nw6VP2qI311Xp3wnZgZDhuaIrUg7krpQgTr4&e= """;
+            // TODO: I'm not sure this url is correct. Also, this url should be stored in a settings file so that it can be updated as needed.
+            var url = @"https://urldefense.proofpoint.com/v2/url?u=http-3A__example.com_request&d=DwIGAg&c=iWzD8gpC8N4xSkOHZBDmCw&r=R0U6eziUSfkIiSy6xlVVHEbyT-5CVX85B2177L6G3Po&m=yeOGbdLEit9cyYWgLXxv5PRcMgRiallgPowRbt59hFw&s=lZ8qcf2Nw6VP2qI311Xp3wnZgZDhuaIrUg7krpQgTr4&e= ";
 
             var data = new
             {
@@ -30,19 +38,29 @@ namespace WebAPI.Controllers
             var stringContent = new StringContent(JsonConvert.SerializeObject(data));
             stringContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
-            var client = new HttpClient();
-            var response = await client.PostAsync(url, stringContent);
+            string requestId;
 
-            if (response.IsSuccessStatusCode)
+            using (var client = new HttpClient())
             {
-                var requestId = await response.Content.ReadAsStringAsync();
+                var response = await client.PostAsync(url, stringContent);
 
-                // TODO: add requestId to DB
+                if (!response.IsSuccessStatusCode)
+                    return BadRequest("An exception occurred while communicating with the third party service.");
+
+                requestId = await response.Content.ReadAsStringAsync();
+            }
+
+            try
+            {
+                await _context.Requests.AddAsync(new Request(requestId));
+                await _context.SaveChangesAsync();
 
                 return new OkObjectResult(requestId);
             }
-
-            return BadRequest("An exception occurred while communicating with the third party service.");
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost]

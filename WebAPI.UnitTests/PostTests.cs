@@ -1,22 +1,15 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using WebAPI.Controllers;
+using Microsoft.EntityFrameworkCore;
 using WebAPI.Models;
 using Xunit;
 
 namespace WebAPI.UnitTests
 {
-    public class PostTests
+    public class PostTests : BaseTests
     {
-        public PostTests()
-        {
-            _sut = new ThirdPartyController();
-        }
-
-        private readonly ThirdPartyController _sut;
-
         [Fact]
-        public async Task given_a_key_when_POSTed_should_return_key()
+        public async Task given_a_body_when_POSTed_should_return_key()
         {
             var response = await _sut.Post(new PostBody("My magic string"));
 
@@ -24,7 +17,7 @@ namespace WebAPI.UnitTests
         }
 
         [Fact]
-        public async Task given_a_key_when_POSTed_should_return_Ok()
+        public async Task given_a_body_when_POSTed_should_return_Ok()
         {
             var response = await _sut.Post(new PostBody("My magic string"));
 
@@ -32,11 +25,14 @@ namespace WebAPI.UnitTests
         }
 
         [Fact]
-        public async Task given_a_key_when_POSTed_should_store_key_in_database()
+        public async Task given_a_body_when_POSTed_should_store_key_in_database()
         {
+            var id = ""; // TODO: What value should be here?
             var response = await _sut.Post(new PostBody("My magic string"));
 
-            // TODO: get from db
+            var request = await _context.Requests.SingleOrDefaultAsync(r => r.Id == id);
+
+            Assert.NotNull(request);
         }
     }
 }
