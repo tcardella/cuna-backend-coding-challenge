@@ -7,12 +7,12 @@ namespace WebAPI.UnitTests
 {
     public class PutCallbackTests
     {
-        private readonly ThirdPartyController _sut;
-
         public PutCallbackTests()
         {
             _sut = new ThirdPartyController();
         }
+
+        private readonly ThirdPartyController _sut;
 
         [Fact]
         public async Task given_a_valid_string_should_return_204_status_code()

@@ -36,7 +36,7 @@ namespace WebAPI.Controllers
         [Route("status/{id}")]
         public async Task<OkObjectResult> Get(Guid id)
         {
-            return new OkObjectResult(new GetBody());
+            return new OkObjectResult(new GetBody("status", "detail", "body"));
         }
     }
 }
