@@ -1,10 +1,8 @@
-name: push-to-develop
+name: deploy-from-master
 
 on:
   push:
-    branches: [ develop ]
-  pull_request:
-    branches: [ develop ]
+    branches: [ master ]
 
 jobs:
   build:
@@ -25,3 +23,12 @@ jobs:
       run: |
         dotnet build -c Release --no-restore './WebAPI/WebAPI.csproj'
         dotnet build --no-restore './WebAPI.UnitTests/WebAPI.UnitTests.csproj'
+    
+    - name: Publish to Azure
+      run: dotnet publish './WebAPI/WebAPI.csproj' -o ./publish -c Release
+
+    - uses: azure/webapps-deploy@v2
+      with:
+        app-name: 'cuna-backend-coding-challenge'
+        publish-profile: ${{ secrets.azureWebAppPublishProfile }}
+        package: ./publish/

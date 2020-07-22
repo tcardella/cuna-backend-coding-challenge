@@ -1,10 +1,8 @@
-name: push-to-develop
+name: pull-request-to-master
 
 on:
-  push:
-    branches: [ develop ]
   pull_request:
-    branches: [ develop ]
+    branches: [ master ]
 
 jobs:
   build:
