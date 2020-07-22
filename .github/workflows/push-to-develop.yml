@@ -23,8 +23,8 @@ jobs:
 
     - name: Build
       run: |
-        dotnet build -c Release --no-restore './cuna-backend-coding-challenge/WebAPI/WebAPI.csproj'
-        dotnet build --no-restore './cuna-backend-coding-challenge/WebAPI.UnitTests/WebAPI.UnitTests.csproj'
+        dotnet build -c Release --no-restore './WebAPI/WebAPI.csproj'
+        dotnet build --no-restore './WebAPI.UnitTests/WebAPI.UnitTests.csproj'
     
     - name: Test
-      run: dotnet test --no-restore --verbosity normal './cuna-backend-coding-challenge/WebAPI.UnitTests/WebAPI.UnitTests.csproj'
+      run: dotnet test --no-restore --verbosity normal './WebAPI.UnitTests/WebAPI.UnitTests.csproj'
