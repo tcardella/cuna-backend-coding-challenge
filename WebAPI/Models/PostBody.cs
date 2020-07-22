@@ -2,6 +2,10 @@
 {
     public class PostBody
     {
+        public PostBody()
+        {
+        }
+
         public PostBody(string body)
         {
             Body = body;
