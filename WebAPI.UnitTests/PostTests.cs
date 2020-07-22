@@ -1,34 +1,38 @@
 ﻿using System.Threading.Tasks;
-using WebAPI.Controllers;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using WebAPI.Models;
 using Xunit;
 
 namespace WebAPI.UnitTests
 {
-    public class PostTests
+    public class PostTests : BaseTests
     {
-        public PostTests()
-        {
-            _sut = new ThirdPartyController();
-        }
-
-        private readonly ThirdPartyController _sut;
-
         [Fact]
-        public async Task given_a_key_when_POSTed_should_return_200()
+        public async Task given_a_body_when_POSTed_should_return_key()
         {
             var response = await _sut.Post(new PostBody("My magic string"));
 
-            Assert.Equal(200, response.StatusCode);
+            Assert.True(((OkObjectResult) response).Value.ToString().Length > 0);
         }
 
         [Fact]
-        public async Task given_a_key_when_POSTed_should_return_key()
+        public async Task given_a_body_when_POSTed_should_return_Ok()
         {
             var response = await _sut.Post(new PostBody("My magic string"));
 
-            Assert.IsType<string>(response.Value);
-            Assert.True(response.Value.ToString().Length > 0);
+            Assert.IsType<OkObjectResult>(response);
+        }
+
+        [Fact]
+        public async Task given_a_body_when_POSTed_should_store_key_in_database()
+        {
+            var id = ""; // TODO: What value should be here?
+            var response = await _sut.Post(new PostBody("My magic string"));
+
+            var request = await _context.Requests.SingleOrDefaultAsync(r => r.Id == id);
+
+            Assert.NotNull(request);
         }
     }
 }
