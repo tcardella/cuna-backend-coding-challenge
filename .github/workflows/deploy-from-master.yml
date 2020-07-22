@@ -24,9 +24,6 @@ jobs:
         dotnet build -c Release --no-restore './WebAPI/WebAPI.csproj'
         dotnet build --no-restore './WebAPI.UnitTests/WebAPI.UnitTests.csproj'
     
-    - name: Test
-      run: dotnet test --no-restore --verbosity normal './WebAPI.UnitTests/WebAPI.UnitTests.csproj'
-    
     - name: Publish to Azure
       run: dotnet publish './WebAPI/WebAPI.csproj' -o ./publish -c Release
 
